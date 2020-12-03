@@ -45,7 +45,7 @@ test("submit button exists", () => {
 
 
 
-test("user can fill out and submit form", () => {
+test("user can fill out and submit form", async () => {
         //Arrange: setup react component
         render(<ContactForm />);
     
@@ -64,28 +64,32 @@ test("user can fill out and submit form", () => {
         userEvent.type(email, "lsadkf");
         userEvent.type(message, "lsasdasddkf");
     
-        const button = document.querySelector("button");
-        // userEvent.click(button);
+        const button = screen.getByRole("button");
+        userEvent.click(button);
         console.log(button);
     
-    
+
         //Assert: Test to see if submit worked
         //  1. Find our submitted inputs
-        // const pre = screen.getByRole("pre");
-        // expect(pre).toBeTruthy();
-        // const newResult = screen.queryByText(/edd/i);
-        // console.log(newResult);
-        // expect(newResult).toBeInTheDocument();
-    
+        const fNameRender = await screen.findByText(/edd/);
+        const lNameRender = screen.queryByText(/maton/);
+        const emailRender = screen.queryByText(/lsadkf/);
+        const messageRender = screen.queryByText(/lsasdasddkf/);
+        expect(fNameRender).toBeInTheDocument();
+        expect(lNameRender).toBeInTheDocument();
+        expect(emailRender).toBeInTheDocument();
+        expect(messageRender).toBeInTheDocument();
+
     });
     
     
-    // test("first name can't be more than 3 characters", () => {
-    //     render(<ContactForm />);
-    //     const fName = screen.getByLabelText(/First Name*/i);
-    //     userEvent.type(fName, "michael");
-    //     userEvent.clear(fName);
-    //     const error = screen.queryByText(/maxlength/i);
-    //     expect(error).toBeTruthy();
-    //     expect(error).toBeInTheDocument();
-    // });
+    test("first name can't be more than 3 characters", async () => {
+        render(<ContactForm />);
+        const fName = screen.getByLabelText(/First Name*/i);
+        userEvent.type(fName, "michael");
+        const button = screen.getByRole("button");
+        userEvent.click(button);
+        const error = await screen.findByText(/maxlength/i);
+        expect(error).toBeTruthy();
+        expect(error).toBeInTheDocument();
+    });
